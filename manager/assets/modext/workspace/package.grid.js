@@ -115,8 +115,46 @@ MODx.grid.Package = function(config) {
     MODx.grid.Package.superclass.constructor.call(this,config);
     this.on('render',function() {
         this.getView().mainBody.update('<div class="x-grid-empty">' + _('loading') + '</div>');
+
     },this);
 	this.on('click', this.onClick, this);
+
+    this.on('afterrender',function(){
+        var dropTarget = this.getView().mainBody;
+
+        dropTarget.addListener('dragover',function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('over');
+            return false;
+        },this);
+        dropTarget.addListener('dragenter',function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('enter');
+            return false;
+        },this);
+
+        dropTarget.addListener('drop',function(evt){
+            evt.preventDefault();
+            evt.stopPropagation();
+            console.log(evt);
+            var e = evt.browserEvent;
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('file dropped',e);
+            var file = e.dataTransfer.files[0],
+                reader = new FileReader();
+            reader.onload = function (event) {
+                console.log('File loaded =)');
+            };
+
+            console.log('dropped!!!');
+        },this,{
+            stopEvent: true
+        });
+
+    },this)
 };
 Ext.extend(MODx.grid.Package,MODx.grid.Grid,{
 	console: null
